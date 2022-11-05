@@ -78,6 +78,23 @@ plugins.push(progressPlugin)
     },
 }
 
+## 手写一个简单的style-loader
+```js
+//手写，简单理解
+module.exports = function(source){
+    return `
+        function injectCss(css){
+            const style = document.createElement('style');
+            style.appendChild(document.createTextNode(css))
+            document.head.appendChild(style)
+        }
+        injectCss(\`${source}\`)
+    `
+}
+```
+使用 DOM API 加载 CSS 资源，由于 CSS 需要在 JS 资源加载完后通过 DOM API 控制加载，容易出现页面抖动，在线上低效且性能低下。且对于 SSR 极度不友好。
+由于性能需要，在线上通常需要单独加载 CSS 资源，这要求打包器能够将 CSS 打包，此时需要借助于 mini-css-extract-plugin (opens new window)将 CSS 单独抽离出来。
+深入 webpack 中如何抽离 CSS 的源码有助于加深对 webpack 的理解。
 
 
 
